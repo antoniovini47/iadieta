@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 10.2.2"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "env": {
+        "EXPO_PUBLIC_GEMINI_API_KEY": "AIzaSyASmDQIHL0gSlkt2OOpr3faALtgAzRqjOw",
+        "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
+      },
+      "ios": {
+        "simulator": "true"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "distribution": "internal"
+    },
+    "production": {
+      "distribution": "store",
+      "env": {
+        "EXPO_PUBLIC_GEMINI_API_KEY": "AIzaSyASmDQIHL0gSlkt2OOpr3faALtgAzRqjOw",
+        "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
+      },
+      "android": {
+        "buildType": "app-bundle",
+        "autoIncrement": "version"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

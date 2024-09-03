@@ -26,27 +26,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="chat"
-        options={{
-          title: "Chat",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "chatbox-ellipses" : "chatbox-ellipses-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="image"
-        options={{
-          title: "Image",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? "image" : "image-outline"} color={color} />
-          ),
-        }}
-      />
     </Tabs>
   );
 }
