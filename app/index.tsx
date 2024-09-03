@@ -1,4 +1,4 @@
-import { Text, Pressable, SafeAreaView, View, ScrollView } from "react-native";
+import { Text, Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
 import ChatMessage, { ChatMessageProps } from "@/components/ChatMessage";
 import GeminiService from "@/GeminiService";
 import styles from "@/assets/styles/stylesIndex";
@@ -16,7 +16,7 @@ function waitNSecs(secs: number) {
   });
 }
 
-const randomSendedMessages = [
+export const randomSendedMessages = [
   "Avalie minha refeicao! ☺️",
   "Quanto vai me custar isso? 😅",
   "Da uma olhada no meu prato! 🫣",
@@ -33,9 +33,15 @@ export default function HomeScreen() {
     setMessages((previousMessages) => [...previousMessages, messageAiResponse]);
 
     try {
-      const result = await GeminiService.getImageResponse(imageBase64); //Funcionando, mas desabilitado pra economizar tokens
-      console.log("result: ", result.data.candidates[0].content.parts[0].text);
-      const jsonReponse = JSON.parse(result.data.candidates[0].content.parts[0].text);
+      const result = __DEV__
+        ? '{"k": 999, "p": 99, "m": true}'
+        : await GeminiService.getImageResponse(imageBase64); //Funcionando, mas desabilitado pra economizar tokens
+      __DEV__
+        ? console.log("Valores de demonstração: ", result)
+        : console.log("result: ", result.data.candidates[0].content.parts[0].text);
+      const jsonReponse = JSON.parse(
+        __DEV__ ? result : result.data.candidates[0].content.parts[0].text
+      );
       const valueOfKcal = jsonReponse["k"];
       const valueOfProteins = jsonReponse["p"];
       const isFood: boolean = jsonReponse["m"];
@@ -145,30 +151,32 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.containerScreen}>
-      <ScrollView
-        style={styles.containerChat}
-        showsVerticalScrollIndicator={true}
-        ref={(ref) => {
-          this.scrollView = ref;
-        }}
-        onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
-        {messages.map((msg: ChatMessageProps, index: number) => {
-          const { type, text, createdAt, imageUri } = msg;
-          return (
-            <ChatMessage
-              key={index}
-              type={type}
-              text={text}
-              createdAt={createdAt}
-              imageUri={imageUri}
-            />
-          );
-        })}
-      </ScrollView>
+      <ImageBackground source={require("../assets/images/chatBackground.png")} style={{ flex: 1 }}>
+        <ScrollView
+          style={styles.containerChat}
+          showsVerticalScrollIndicator={true}
+          ref={(ref) => {
+            this.scrollView = ref;
+          }}
+          onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+          {messages.map((msg: ChatMessageProps, index: number) => {
+            const { type, text, createdAt, imageUri } = msg;
+            return (
+              <ChatMessage
+                key={index}
+                type={type}
+                text={text}
+                createdAt={createdAt}
+                imageUri={imageUri}
+              />
+            );
+          })}
+        </ScrollView>
+      </ImageBackground>
       <View style={styles.containerFooter}>
         <Pressable
           onPress={() => {
-            console.log("Opening settings...");
+            useToast("Configurações ainda em desenvolvimento...");
           }}
           style={styles.buttonFooter}>
           <Ionicons name="settings" size={36} style={{ color: "#FFF" }} />
@@ -182,7 +190,9 @@ export default function HomeScreen() {
           <Ionicons name="attach" size={36} style={{ color: "#FFF" }} />
         </Pressable>
 
-        <Pressable onPress={() => console.log("stats clicked")} style={styles.buttonFooter}>
+        <Pressable
+          onPress={() => useToast("Estatísticas ainda em desenvolvimento...")}
+          style={styles.buttonFooter}>
           <Ionicons name="bar-chart" size={36} style={{ color: "#FFF" }} />
         </Pressable>
       </View>

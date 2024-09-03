@@ -4,15 +4,15 @@
     "description": "Aplicativo para auxiliar dieta usando inteligência artificial",
     "owner": "rotec",
     "slug": "ia-dieta",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon-transparentbg.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#9CCA43"
     },
     "ios": {
       "supportsTablet": true,
@@ -20,15 +20,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/icon-transparentbg.png",
+        "backgroundColor": "#9CCA43"
       },
-      "package": "com.rotech.iadieta"
+      "package": "com.rotech.iadieta",
+      "version": 1
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon-transparentbg.png"
     },
     "plugins": [
       "expo-router"

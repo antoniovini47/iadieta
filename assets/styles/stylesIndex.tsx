@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
   },
   containerChat: {
     flexDirection: "column",
-    backgroundColor: "white",
     flex: 1,
     padding: 24,
     marginVertical: 12,
