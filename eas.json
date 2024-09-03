@@ -9,7 +9,7 @@
     },
     "preview": {
       "env": {
-        "EXPO_PUBLIC_GEMINI_API_KEY": "AIzaSyASmDQIHL0gSlkt2OOpr3faALtgAzRqjOw",
+        "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
         "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
       },
       "ios": {
@@ -23,7 +23,7 @@
     "production": {
       "distribution": "store",
       "env": {
-        "EXPO_PUBLIC_GEMINI_API_KEY": "AIzaSyASmDQIHL0gSlkt2OOpr3faALtgAzRqjOw",
+        "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
         "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
       },
       "android": {

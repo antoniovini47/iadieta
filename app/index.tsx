@@ -1,6 +1,6 @@
 import { Text, Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
 import ChatMessage, { ChatMessageProps } from "@/components/ChatMessage";
-import GeminiService from "@/GeminiService";
+import GeminiService from "../services/GeminiService";
 import styles from "@/assets/styles/stylesIndex";
 import { useState } from "react";
 import initialMessages from "@/assets/messages";
