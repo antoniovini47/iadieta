@@ -1,12 +1,13 @@
-import { Text, Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
-import ChatMessage, { ChatMessageProps } from "@/components/ChatMessage";
+import { Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
+import ChatMessage, { ChatMessageProps } from "../components/ChatMessage";
 import GeminiService from "../services/GeminiService";
-import styles from "@/assets/styles/stylesIndex";
+import styles from "../assets/styles/stylesIndex";
 import { useState } from "react";
-import initialMessages from "@/assets/messages";
+import initialMessages from "../assets/messages";
 import * as ImagePicker from "expo-image-picker";
-import useToast from "@/hooks/useToast";
+import useToast from "../hooks/useToast";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AdBanner from "../components/AdBanner";
 
 function waitNSecs(secs: number) {
   return new Promise((resolve) => {
@@ -38,7 +39,7 @@ export default function HomeScreen() {
         : await GeminiService.getImageResponse(imageBase64); //Funcionando, mas desabilitado pra economizar tokens
       __DEV__
         ? console.log("Valores de demonstração: ", result)
-        : console.log("result: ", result.data.candidates[0].content.parts[0].text);
+        : console.log("result from Gemini: ", result.data.candidates[0].content.parts[0].text);
       const jsonReponse = JSON.parse(
         __DEV__ ? result : result.data.candidates[0].content.parts[0].text
       );
@@ -151,6 +152,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.containerScreen}>
+      {/* <AdBanner /> */}
       <ImageBackground source={require("../assets/images/chatBackground.png")} style={{ flex: 1 }}>
         <ScrollView
           style={styles.containerChat}

@@ -6,7 +6,7 @@
     "slug": "ia-dieta",
     "version": "0.1.2",
     "orientation": "portrait",
-    "icon": "./assets/images/icon-transparentbg.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon-transparentbg.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#9CCA43"
       },
       "package": "com.rotech.iadieta",
@@ -45,5 +45,9 @@
         "projectId": "99a67bdf-a168-479d-921a-bfd7d06391fe"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9218769381944425~8121106243",
+    "ios_app_id": "ca-app-pub-9218769381944425~8121106243"
   }
 }
