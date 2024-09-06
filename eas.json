@@ -5,7 +5,15 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
+        "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
+      }
     },
     "preview": {
       "env": {

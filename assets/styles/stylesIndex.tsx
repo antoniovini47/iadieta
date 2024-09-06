@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     marginBottom: 12,
+    marginTop: 12,
   },
 
   textButton: {

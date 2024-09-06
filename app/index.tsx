@@ -5,9 +5,12 @@ import styles from "../assets/styles/stylesIndex";
 import { useState } from "react";
 import initialMessages from "../assets/messages";
 import * as ImagePicker from "expo-image-picker";
-import useToast from "../hooks/useToast";
+import showToast from "../hooks/useToast";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AdBanner from "../components/AdBanner";
+import humanizedValue from "../constants/humanizedValue";
+import { randomSendedMessages } from "../constants/texts";
+import TokensButton from "../components/TokensButton";
 
 function waitNSecs(secs: number) {
   return new Promise((resolve) => {
@@ -17,14 +20,8 @@ function waitNSecs(secs: number) {
   });
 }
 
-export const randomSendedMessages = [
-  "Avalie minha refeicao! ☺️",
-  "Quanto vai me custar isso? 😅",
-  "Da uma olhada no meu prato! 🫣",
-  "Estou com fome! 😋",
-];
-
 export default function HomeScreen() {
+  const [tokens, setTokens] = useState(0);
   const [messages, setMessages] = useState<ChatMessageProps[]>(initialMessages);
   const [mediaPermission, requestPermission] = ImagePicker.useCameraPermissions();
 
@@ -35,7 +32,7 @@ export default function HomeScreen() {
 
     try {
       const result = __DEV__
-        ? '{"k": 999, "p": 99, "m": true}'
+        ? '{"k": 1000, "p": 100, "m": true}'
         : await GeminiService.getImageResponse(imageBase64); //Funcionando, mas desabilitado pra economizar tokens
       __DEV__
         ? console.log("Valores de demonstração: ", result)
@@ -52,9 +49,9 @@ export default function HomeScreen() {
       if (isFood) {
         textToShow =
           "Imagem analisada com sucesso!\nResultado: \n" +
-          valueOfKcal +
+          humanizedValue(valueOfKcal) +
           " kcal 🔥\n" +
-          valueOfProteins +
+          humanizedValue(valueOfProteins) +
           " g de proteína 💪";
       } else {
         textToShow = "Por favor, envie foto de um prato de comida!";
@@ -63,7 +60,7 @@ export default function HomeScreen() {
       messageAiResponse.text = textToShow;
     } catch (error: any) {
       messageAiResponse.text = "Erro ao analisar a imagem..." + error.message;
-      ///TODO: Insert button to retry
+      // TODO: Insert button to retry
     } finally {
       setMessages((previousMessages) => [...previousMessages]);
     }
@@ -104,17 +101,17 @@ export default function HomeScreen() {
       });
 
       if (result.canceled) {
-        useToast("Selecione uma imagem para continuar");
+        showToast("Selecione uma imagem para continuar");
         return;
       }
 
       if (result.assets[0] && result.assets[0].base64) {
         handleCreateNewUserInput(result.assets[0]);
       } else {
-        useToast("Imagem invalida!");
+        showToast("Imagem invalida!");
       }
     } catch (error) {
-      useToast("Error ao selecionar a imagem.\n" + error);
+      showToast("Error ao selecionar a imagem.\n" + error);
     }
   };
 
@@ -136,23 +133,28 @@ export default function HomeScreen() {
       });
 
       if (result.canceled) {
-        useToast("Selecione uma imagem para continuar");
+        showToast("Selecione uma imagem para continuar");
         return;
       }
 
       if (result.assets[0] && result.assets[0].base64) {
         handleCreateNewUserInput(result.assets[0]);
       } else {
-        useToast("Imagem invalida!");
+        showToast("Imagem invalida!");
       }
     } catch (error) {
-      useToast("Error ao tirar a foto.\n" + error);
+      showToast("Error ao tirar a foto.\n" + error);
     }
   };
 
+  function handleTokensButton() {
+    showToast("handleTokensButton called...");
+    setTokens((prevTokens) => prevTokens + 1);
+  }
+
   return (
     <SafeAreaView style={styles.containerScreen}>
-      {/* <AdBanner /> */}
+      <AdBanner />
       <ImageBackground source={require("../assets/images/chatBackground.png")} style={{ flex: 1 }}>
         <ScrollView
           style={styles.containerChat}
@@ -178,25 +180,27 @@ export default function HomeScreen() {
       <View style={styles.containerFooter}>
         <Pressable
           onPress={() => {
-            useToast("Configurações ainda em desenvolvimento...");
+            showToast("Configurações ainda em desenvolvimento...");
           }}
           style={styles.buttonFooter}>
-          <Ionicons name="settings" size={36} style={{ color: "#FFF" }} />
-          {/* style={[{ marginBottom: -3 }, style]} {...rest} */}
-          {/* <Text style={styles.textButton}>Settings</Text> */}
+          <Ionicons name="settings" size={36} style={{ color: "#999" }} />
         </Pressable>
+
         <Pressable onPress={handleTakePicture} style={styles.buttonFooter}>
           <Ionicons name="camera" size={36} style={{ color: "#FFF" }} />
         </Pressable>
+
         <Pressable onPress={handleChooseImageFromFiles} style={styles.buttonFooter}>
-          <Ionicons name="attach" size={36} style={{ color: "#FFF" }} />
+          <Ionicons name="apps-sharp" size={36} style={{ color: "#FFF" }} />
         </Pressable>
 
         <Pressable
-          onPress={() => useToast("Estatísticas ainda em desenvolvimento...")}
+          onPress={() => showToast("Estatísticas ainda em desenvolvimento...")}
           style={styles.buttonFooter}>
-          <Ionicons name="bar-chart" size={36} style={{ color: "#FFF" }} />
+          <Ionicons name="bar-chart" size={36} style={{ color: "#999" }} />
         </Pressable>
+
+        <TokensButton handleClick={handleTokensButton} tokens={tokens} />
       </View>
     </SafeAreaView>
   );

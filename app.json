@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/adaptative-icon.png",
         "backgroundColor": "#9CCA43"
       },
       "package": "com.rotech.iadieta",
@@ -29,7 +29,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/icon-transparentbg.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
       "expo-router"
@@ -44,6 +44,12 @@
       "eas": {
         "projectId": "99a67bdf-a168-479d-921a-bfd7d06391fe"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/99a67bdf-a168-479d-921a-bfd7d06391fe"
     }
   },
   "react-native-google-mobile-ads": {

@@ -7,12 +7,12 @@ export default function RootLayout() {
   // Initialize Google Mobile Ads SDK
   useEffect(() => {
     (async () => {
-      // // Google AdMob will show any messages here that you just set up on the AdMob Privacy & Messaging page
-      // const { status: trackingStatus } = await requestTrackingPermissionsAsync();
-      // if (trackingStatus !== "granted") {
-      //   // Do something here such as turn off Sentry tracking, store in context/redux to allow for personalized ads, etc.
-      // }
-      // await mobileAds().initialize();
+      // Google AdMob will show any messages here that you just set up on the AdMob Privacy & Messaging page
+      const { status: trackingStatus } = await requestTrackingPermissionsAsync();
+      if (trackingStatus !== "granted") {
+        // Do something here such as turn off Sentry tracking, store in context/redux to allow for personalized ads, etc.
+      }
+      await mobileAds().initialize();
     })();
   }, []);
   return (
