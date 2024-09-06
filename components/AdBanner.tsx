@@ -3,8 +3,8 @@ import * as Device from "expo-device";
 import React, { useState } from "react";
 import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
 
-const iosAdmobBanner = "ca-app-pub-9218769381944425/8248264603";
-const androidAdmobBanner = "cca-app-pub-9218769381944425/8248264603";
+const iosAdmobBanner = process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID;
+const androidAdmobBanner = process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID;
 const productionID = Device.osName === "Android" ? androidAdmobBanner : iosAdmobBanner;
 
 const AdBanner = () => {

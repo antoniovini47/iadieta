@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
 import ChatMessage, { ChatMessageProps } from "../components/ChatMessage";
 import GeminiService from "../services/GeminiService";
@@ -11,6 +12,16 @@ import AdBanner from "../components/AdBanner";
 import humanizedValue from "../constants/humanizedValue";
 import { randomSendedMessages } from "../constants/texts";
 import TokensButton from "../components/TokensButton";
+import { TestIds, InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
+
+const adInteristitialUnitID: any = __DEV__
+  ? TestIds.INTERSTITIAL
+  : process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID;
+
+const interstitial = InterstitialAd.createForAdRequest(adInteristitialUnitID, {
+  keywords: ["saúde", "alimentação", "calorias", "fitness"], // Update based on the most relevant keywords for your app/users, these are just random examples
+  requestNonPersonalizedAdsOnly: true, // Update based on the initial tracking settings from initialization earlier
+});
 
 function waitNSecs(secs: number) {
   return new Promise((resolve) => {
@@ -21,6 +32,25 @@ function waitNSecs(secs: number) {
 }
 
 export default function HomeScreen() {
+  // Interstitial Ad functions
+  const [isInterstitialAdLoaded, setisInterstitialAdLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      setisInterstitialAdLoaded(true);
+    });
+    const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      setisInterstitialAdLoaded(false);
+      interstitial.load();
+    });
+    interstitial.load();
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeClosed();
+    };
+  }, []);
+
+  //Other Functions
   const [tokens, setTokens] = useState(0);
   const [messages, setMessages] = useState<ChatMessageProps[]>(initialMessages);
   const [mediaPermission, requestPermission] = ImagePicker.useCameraPermissions();
@@ -29,6 +59,10 @@ export default function HomeScreen() {
     await waitNSecs(1);
     const messageAiResponse = createNewMessage("fromAI", "Analisando imagem...", "");
     setMessages((previousMessages) => [...previousMessages, messageAiResponse]);
+
+    if (isInterstitialAdLoaded && !__DEV__) {
+      interstitial.show();
+    }
 
     try {
       const result = __DEV__
