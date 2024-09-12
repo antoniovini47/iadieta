@@ -9,34 +9,42 @@
       "channel": "development",
       "android": {
         "buildType": "apk"
-      },
-      "env": {
-        "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
-        "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
       }
     },
     "preview": {
-      "env": {
-        "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
-        "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
-      },
+      "distribution": "internal",
       "ios": {
         "simulator": "true"
       },
       "android": {
         "buildType": "apk"
-      },
-      "distribution": "internal"
+      }
     },
     "production": {
       "distribution": "store",
       "env": {
         "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
-        "EXPO_PUBLIC_IS_USER_PREMIUM": "true"
+        "EXPO_PUBLIC_APP_AD_ID": "$EXPO_PUBLIC_APP_AD_ID$",
+        "EXPO_PUBLIC_BANNER_AD_UNIT_ID": "$EXPO_PUBLIC_BANNER_AD_UNIT_ID$",
+        "EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID": "$EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID$",
+        "EXPO_PUBLIC_IS_USER_PREMIUM":"true"
       },
       "android": {
         "buildType": "app-bundle",
-        "autoIncrement": "version"
+        "autoIncrement": "versionCode"
+      }
+    },
+    "testProduction": {
+      "distribution": "store",
+      "env": {
+        "EXPO_PUBLIC_GEMINI_API_KEY": "$EXPO_PUBLIC_GEMINI_API_KEY$",
+        "EXPO_PUBLIC_APP_AD_ID": "$EXPO_PUBLIC_APP_AD_ID$",
+        "EXPO_PUBLIC_BANNER_AD_UNIT_ID": "$EXPO_PUBLIC_BANNER_AD_UNIT_ID$",
+        "EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID": "$EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID$",
+        "EXPO_PUBLIC_IS_USER_PREMIUM":"true"
+      },
+      "android": {
+        "buildType": "apk"
       }
     }
   },

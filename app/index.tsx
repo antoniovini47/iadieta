@@ -14,7 +14,7 @@ import { randomSendedMessages } from "../constants/texts";
 import TokensButton from "../components/TokensButton";
 import { TestIds, InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
 
-const adInteristitialUnitID: any = __DEV__
+const adInteristitialUnitID: string = __DEV__
   ? TestIds.INTERSTITIAL
   : process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID;
 
@@ -212,13 +212,13 @@ export default function HomeScreen() {
         </ScrollView>
       </ImageBackground>
       <View style={styles.containerFooter}>
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             showToast("Configurações ainda em desenvolvimento...");
           }}
           style={styles.buttonFooter}>
           <Ionicons name="settings" size={36} style={{ color: "#999" }} />
-        </Pressable>
+        </Pressable> */}
 
         <Pressable onPress={handleTakePicture} style={styles.buttonFooter}>
           <Ionicons name="camera" size={36} style={{ color: "#FFF" }} />
@@ -228,13 +228,12 @@ export default function HomeScreen() {
           <Ionicons name="apps-sharp" size={36} style={{ color: "#FFF" }} />
         </Pressable>
 
-        <Pressable
+        {/* <Pressable
           onPress={() => showToast("Estatísticas ainda em desenvolvimento...")}
           style={styles.buttonFooter}>
           <Ionicons name="bar-chart" size={36} style={{ color: "#999" }} />
-        </Pressable>
-
-        <TokensButton handleClick={handleTokensButton} tokens={tokens} />
+        </Pressable> */}
+        {/* <TokensButton handleClick={handleTokensButton} tokens={tokens} /> */}
       </View>
     </SafeAreaView>
   );
