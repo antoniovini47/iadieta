@@ -24,7 +24,9 @@ export default function ChatMessage(props: ChatMessageProps) {
               ? styles.messageSystem
               : null
           }>
-          {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+          {type == "fromMe" && imageUri && (
+            <Image source={{ uri: imageUri }} style={styles.image} />
+          )}
           <Text style={styles.textMessage}>{text}</Text>
           {type != "fromSystem" && (
             <View style={styles.containerDate}>
@@ -42,14 +44,15 @@ export default function ChatMessage(props: ChatMessageProps) {
   );
 }
 
+// Function to format the time of the message human readable
 function formattingTime(secs: number, type: string) {
   const time = new Date(secs);
   let firstDigits, separatorChar, secondDigits;
   switch (type) {
     case "dayMonth":
-      firstDigits = time.getDay();
+      firstDigits = time.getDate();
       separatorChar = "/";
-      secondDigits = time.getMonth();
+      secondDigits = time.getMonth() + 1;
       break;
     case "hourMinute":
       firstDigits = time.getHours();
@@ -62,9 +65,9 @@ function formattingTime(secs: number, type: string) {
 
   return (
     <Text>
-      {firstDigits && firstDigits > 9 ? firstDigits : <>0{firstDigits}</>}
+      {firstDigits && firstDigits > 9 ? <>{firstDigits} </> : <>0{firstDigits}</>}
       {separatorChar}
-      {secondDigits && secondDigits > 9 ? secondDigits : <>0{secondDigits}</>}
+      {secondDigits && secondDigits > 9 ? <>{secondDigits} </> : <>0{secondDigits}</>}
     </Text>
   );
 }

@@ -60,7 +60,7 @@ export default function HomeScreen() {
     const messageAiResponse = createNewMessage("fromAI", "Analisando imagem...", "");
     setMessages((previousMessages) => [...previousMessages, messageAiResponse]);
 
-    if (isInterstitialAdLoaded && !__DEV__) {
+    if (isInterstitialAdLoaded && process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__) {
       interstitial.show();
     }
 
@@ -110,13 +110,30 @@ export default function HomeScreen() {
     return newMessage;
   }
 
+  // Function to create a new message from the user
   function handleCreateNewUserInput(imageAsset: ImagePicker.ImagePickerAsset) {
+    // Create a new message from the user, with a random message from the list, and the image uri
     const newMessage = createNewMessage(
       "fromMe",
       randomSendedMessages[Math.floor(Math.random() * randomSendedMessages.length)],
       imageAsset.uri
     );
 
+    // Check if the last message was sent on another day, and create a new message to show the date
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.createdAt?.getDate() !== newMessage.createdAt?.getDate()) {
+      const today = new Date();
+      setMessages((prevState) => [
+        ...prevState,
+        createNewMessage(
+          "fromSystem",
+          `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`,
+          today.toDateString()
+        ),
+      ]);
+    }
+
+    // Add the new message to the list of messages
     setMessages((prevState) => [...prevState, newMessage]);
     if (imageAsset.base64) {
       handleNewRequestForAI(imageAsset.base64);
@@ -188,7 +205,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.containerScreen}>
-      <AdBanner />
+      {process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__ && <AdBanner />}
       <ImageBackground source={require("../assets/images/chatBackground.png")} style={{ flex: 1 }}>
         <ScrollView
           style={styles.containerChat}
