@@ -6,6 +6,8 @@ export interface ChatMessageProps {
   text: string;
   createdAt?: Date;
   imageUri?: string;
+  kcal?: number;
+  protein?: number;
 }
 
 export default function ChatMessage(props: ChatMessageProps) {

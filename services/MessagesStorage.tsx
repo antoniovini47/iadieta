@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import initialMessages from "../assets/messages";
 import { ChatMessageProps } from "@/components/ChatMessage";
+import initialMessages from "@/assets/messages";
 
 export async function saveMessages(messages: ChatMessageProps[]) {
   try {
@@ -11,11 +11,20 @@ export async function saveMessages(messages: ChatMessageProps[]) {
   }
 }
 
-export async function loadMessages() {
+export const loadMessages = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem("messages");
-    return jsonValue != null ? JSON.parse(jsonValue) : initialMessages[0];
+    return jsonValue != null
+      ? JSON.parse(jsonValue)
+      : [
+          ...initialMessages,
+          {
+            type: "fromSystem",
+            text: "Erro ao carregar mensagens antigas...",
+            createdAt: new Date(),
+          },
+        ];
   } catch (error) {
     console.error("Error loading messages", error);
   }
-}
+};
