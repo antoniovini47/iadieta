@@ -1,5 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  View,
+  ScrollView,
+  ImageBackground,
+  ActivityIndicator,
+} from "react-native";
 import ChatMessage, { ChatMessageProps } from "../components/ChatMessage";
 import GeminiService from "../services/GeminiService";
 import styles from "../assets/styles/stylesIndex";
@@ -52,18 +59,22 @@ export default function HomeScreen() {
   }, []);
 
   //Other Functions
-  //const [tokens, setTokens] = useState(0);
+  //const [tokens, setTokens] = useState(0); // TODO: Implement tokens system
+  //Controls the messages on the chat and the messages to show and load more
   const [messages, setMessages] = useState<ChatMessageProps[]>(initialMessages);
   const [mediaPermission, requestPermission] = ImagePicker.useCameraPermissions();
   const [changingMessagesOnChatMode, setChangingMessagesOnChatMode] = useState<
     "loadingMoreMessages" | "addingNewMessages"
   >("addingNewMessages");
   const scrollViewChatRef = useRef<ScrollView>(null);
+  const [previousContentChatHeight, setPreviousContentHeight] = useState(0);
+  const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
 
   // Controls messages loading to avoid performance issues
   const messagesToShowAndLoadMoreFactor = __DEV__ ? 5 : 20;
   const [visibleMessagesCount, setVisibleMessagesCount] = useState(messagesToShowAndLoadMoreFactor);
   const loadMoreMessages = () => {
+    setIsLoadingMoreMessages(true);
     setChangingMessagesOnChatMode("loadingMoreMessages");
     setVisibleMessagesCount((prevCount) => prevCount + messagesToShowAndLoadMoreFactor);
   };
@@ -328,20 +339,22 @@ export default function HomeScreen() {
           onScroll={handleChatScrollToLoadMoreMessages}
           scrollEventThrottle={16}
           ref={scrollViewChatRef}
-          onContentSizeChange={() => {
-            if (changingMessagesOnChatMode == "addingNewMessages") {
+          onContentSizeChange={(contentChatWidth, contentChatHeight) => {
+            if (changingMessagesOnChatMode === "addingNewMessages") {
               scrollViewChatRef.current?.scrollToEnd({ animated: true });
             }
-            if (changingMessagesOnChatMode == "loadingMoreMessages") {
-              console.log(
-                "correndo pro y...." + messagesToShowAndLoadMoreFactor / visibleMessages.length
-              );
+            if (changingMessagesOnChatMode === "loadingMoreMessages") {
+              const newChatMessagesHeight = contentChatHeight - previousContentChatHeight;
               scrollViewChatRef.current?.scrollTo({
-                y: (messagesToShowAndLoadMoreFactor / visibleMessages.length) * 1,
-                // multiply here for the height of the scroll view on pixels instead of 1 innerHeight
+                y: newChatMessagesHeight,
                 animated: false,
               });
             }
+            // Update previousContentHeight after handling scroll
+            setPreviousContentHeight(contentChatHeight);
+            waitNSecs(0.5).then(() => {
+              setIsLoadingMoreMessages(false);
+            });
           }}>
           {visibleMessages.map((msg: ChatMessageProps, index: number) => {
             const { type, text, createdAt, imageUri } = msg;
@@ -356,6 +369,11 @@ export default function HomeScreen() {
             );
           })}
         </ScrollView>
+        {isLoadingMoreMessages && (
+          <View style={styles.containerLoading}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
       </ImageBackground>
       {process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__ && <AdBanner />}
     </SafeAreaView>
