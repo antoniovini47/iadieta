@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Pressable, SafeAreaView, View, ScrollView, ImageBackground } from "react-native";
 import ChatMessage, { ChatMessageProps } from "../components/ChatMessage";
 import GeminiService from "../services/GeminiService";
@@ -34,9 +34,8 @@ function waitNSecs(secs: number) {
 }
 
 export default function HomeScreen() {
-  // Interstitial Ad functions
+  // Interstitial Ad functions and loading
   const [isInterstitialAdLoaded, setisInterstitialAdLoaded] = useState<boolean>(false);
-
   useEffect(() => {
     const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
       setisInterstitialAdLoaded(true);
@@ -56,6 +55,24 @@ export default function HomeScreen() {
   //const [tokens, setTokens] = useState(0);
   const [messages, setMessages] = useState<ChatMessageProps[]>(initialMessages);
   const [mediaPermission, requestPermission] = ImagePicker.useCameraPermissions();
+  const [changingMessagesOnChatMode, setChangingMessagesOnChatMode] = useState<
+    "loadingMoreMessages" | "addingNewMessages"
+  >("addingNewMessages");
+  const scrollViewChatRef = useRef<ScrollView>(null);
+
+  // Controls messages loading to avoid performance issues
+  const messagesToShowAndLoadMoreFactor = __DEV__ ? 5 : 20;
+  const [visibleMessagesCount, setVisibleMessagesCount] = useState(messagesToShowAndLoadMoreFactor);
+  const loadMoreMessages = () => {
+    setChangingMessagesOnChatMode("loadingMoreMessages");
+    setVisibleMessagesCount((prevCount) => prevCount + messagesToShowAndLoadMoreFactor);
+  };
+  const handleChatScrollToLoadMoreMessages = (event: any) => {
+    if (event.nativeEvent.contentOffset.y === 0) {
+      loadMoreMessages();
+    }
+  };
+  const visibleMessages = messages.slice(-visibleMessagesCount);
 
   // load messages from storage on startup
   useEffect(() => {
@@ -64,6 +81,7 @@ export default function HomeScreen() {
       if (savedMessages.length > 0) {
         setMessages(savedMessages);
       }
+      scrollViewChatRef.current?.scrollToEnd({ animated: true });
     };
     fetchMessages();
   }, []);
@@ -75,7 +93,7 @@ export default function HomeScreen() {
 
   // Function to handle the new request for the Backend AI
   async function handleNewRequestForAI(imageBase64: string) {
-    __DEV__ ? null : await waitNSecs(1);
+    await waitNSecs(1);
     const messageAiResponse = createNewMessage("fromAI", "Analisando imagem...", "");
     setMessages((previousMessages) => [...previousMessages, messageAiResponse]);
 
@@ -163,6 +181,7 @@ export default function HomeScreen() {
 
   // Function to create a new message for the chat
   function createNewMessage(type: string, text: string, imageUri?: string) {
+    setChangingMessagesOnChatMode("addingNewMessages");
     const newMessage: ChatMessageProps = {
       type: type,
       text: text,
@@ -278,29 +297,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.containerScreen}>
-      {process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__ && <AdBanner />}
-      <ImageBackground source={require("../assets/images/chatBackground.png")} style={{ flex: 1 }}>
-        <ScrollView
-          style={styles.containerChat}
-          showsVerticalScrollIndicator={true}
-          ref={(ref) => {
-            this.scrollView = ref;
-          }}
-          onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
-          {messages.map((msg: ChatMessageProps, index: number) => {
-            const { type, text, createdAt, imageUri } = msg;
-            return (
-              <ChatMessage
-                key={index}
-                type={type}
-                text={text}
-                createdAt={createdAt}
-                imageUri={imageUri}
-              />
-            );
-          })}
-        </ScrollView>
-      </ImageBackground>
       <View style={styles.containerFooter}>
         {/* <Pressable
           onPress={() => {
@@ -325,6 +321,43 @@ export default function HomeScreen() {
         </Pressable> */}
         {/* <TokensButton handleClick={handleTokensButton} tokens={tokens} /> */}
       </View>
+      <ImageBackground source={require("../assets/images/chatBackground.png")} style={{ flex: 1 }}>
+        <ScrollView
+          style={styles.containerChat}
+          showsVerticalScrollIndicator={true}
+          onScroll={handleChatScrollToLoadMoreMessages}
+          scrollEventThrottle={16}
+          ref={scrollViewChatRef}
+          onContentSizeChange={() => {
+            if (changingMessagesOnChatMode == "addingNewMessages") {
+              scrollViewChatRef.current?.scrollToEnd({ animated: true });
+            }
+            if (changingMessagesOnChatMode == "loadingMoreMessages") {
+              console.log(
+                "correndo pro y...." + messagesToShowAndLoadMoreFactor / visibleMessages.length
+              );
+              scrollViewChatRef.current?.scrollTo({
+                y: (messagesToShowAndLoadMoreFactor / visibleMessages.length) * 1,
+                // multiply here for the height of the scroll view on pixels instead of 1 innerHeight
+                animated: false,
+              });
+            }
+          }}>
+          {visibleMessages.map((msg: ChatMessageProps, index: number) => {
+            const { type, text, createdAt, imageUri } = msg;
+            return (
+              <ChatMessage
+                key={index}
+                type={type}
+                text={text}
+                createdAt={createdAt}
+                imageUri={imageUri}
+              />
+            );
+          })}
+        </ScrollView>
+      </ImageBackground>
+      {process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__ && <AdBanner />}
     </SafeAreaView>
   );
 }

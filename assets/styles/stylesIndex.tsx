@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   containerScreen: {
     backgroundColor: "black",
-    flexDirection: "column",
+    flexDirection: "column-reverse",
     flex: 1,
   },
   containerTitle: {
