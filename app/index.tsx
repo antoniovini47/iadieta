@@ -14,7 +14,7 @@ import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import showToast from "../hooks/useToast";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import AdBanner from "../components/AdBanner";
+//import AdBanner from "../components/AdBanner";
 import humanizedValue from "../constants/humanizedValue";
 import { randomSendedMessages } from "../constants/texts";
 import TokensButton from "../components/TokensButton";
@@ -22,14 +22,14 @@ import { TestIds, InterstitialAd, AdEventType } from "react-native-google-mobile
 import { saveMessages, loadMessages } from "@/services/MessagesStorage";
 import initialMessages from "@/assets/messages";
 
-const adInteristitialUnitID: string = __DEV__
-  ? TestIds.INTERSTITIAL
-  : process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID;
+// const adInteristitialUnitID: string = __DEV__
+//   ? TestIds.INTERSTITIAL
+//   : process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID;
 
-const interstitial = InterstitialAd.createForAdRequest(adInteristitialUnitID, {
-  keywords: ["saúde", "alimentação", "calorias", "fitness"], // Update based on the most relevant keywords for your app/users, these are just random examples
-  requestNonPersonalizedAdsOnly: true, // Update based on the initial tracking settings from initialization earlier
-});
+// const interstitial = InterstitialAd.createForAdRequest(adInteristitialUnitID, {
+//   keywords: ["saúde", "alimentação", "calorias", "fitness"], // Update based on the most relevant keywords for your app/users, these are just random examples
+//   requestNonPersonalizedAdsOnly: true, // Update based on the initial tracking settings from initialization earlier
+// });
 
 // DEBUG ONLY
 function waitNSecs(secs: number) {
@@ -42,21 +42,21 @@ function waitNSecs(secs: number) {
 
 export default function HomeScreen() {
   // Interstitial Ad functions and loading
-  const [isInterstitialAdLoaded, setisInterstitialAdLoaded] = useState<boolean>(false);
-  useEffect(() => {
-    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-      setisInterstitialAdLoaded(true);
-    });
-    const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      setisInterstitialAdLoaded(false);
-      interstitial.load();
-    });
-    interstitial.load();
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeClosed();
-    };
-  }, []);
+  // const [isInterstitialAdLoaded, setisInterstitialAdLoaded] = useState<boolean>(false);
+  // useEffect(() => {
+  //   const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+  //     setisInterstitialAdLoaded(true);
+  //   });
+  //   const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+  //     setisInterstitialAdLoaded(false);
+  //     interstitial.load();
+  //   });
+  //   interstitial.load();
+  //   return () => {
+  //     unsubscribeLoaded();
+  //     unsubscribeClosed();
+  //   };
+  // }, []);
 
   //Other Functions
   //const [tokens, setTokens] = useState(0); // TODO: Implement tokens system
@@ -109,9 +109,9 @@ export default function HomeScreen() {
     setMessages((previousMessages) => [...previousMessages, messageAiResponse]);
 
     // Show the interstitial ad if it's loaded and the app is in production mode
-    if (isInterstitialAdLoaded && process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__) {
-      interstitial.show();
-    }
+    // if (isInterstitialAdLoaded && process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__) {
+    //   interstitial.show();
+    // }
 
     // Call the backend AI to analyze the image
     try {
@@ -370,12 +370,14 @@ export default function HomeScreen() {
           })}
         </ScrollView>
         {isLoadingMoreMessages && (
-          <View style={styles.containerLoading}>
+          <Pressable
+            onPress={() => setIsLoadingMoreMessages(false)}
+            style={styles.containerLoading}>
             <ActivityIndicator size="large" color="#0000ff" />
-          </View>
+          </Pressable>
         )}
       </ImageBackground>
-      {process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__ && <AdBanner />}
+      {/* {process.env.EXPO_PUBLIC_PRODUCTION_MODE && !__DEV__ && <AdBanner />} */}
     </SafeAreaView>
   );
 }
